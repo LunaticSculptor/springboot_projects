@@ -1,0 +1,15 @@
+1. Go to docker hub: https://hub.docker.com/
+2. Create a new Repository
+3. Step 1 - Build docker image and tag it with the name "jhooq-k8s-springboot"
+	$ docker build -t jhooq-k8s-springboot .
+4. Since our registry name on dockerhub is "rahulwagh17/jhooq-k8s-springboot" so we need to tag the build image one more time with docker registry name
+	$ docker tag jhooq-k8s-springboot rahulwagh17/kubernetes:jhooq-k8s-springboot
+5. Push the docker image to docker hub
+	$ docker push  rahulwagh17/kubernetes:jhooq-k8s-springboot
+
+The push refers to repository [docker.io/rahulwagh17/kubernetes]
+14170fe294f1: Pushed 
+ceaf9e1ebef5: Layer already exists 
+9b9b7f3d56a0: Layer already exists 
+f1b5933fe4b5: Layer already exists 
+jhooq-k8s-springboot: digest: sha256:b50ccfc5f80308795051b75fe69cc76f30dc37996b2c6065d2c978125621aefa size: 1159

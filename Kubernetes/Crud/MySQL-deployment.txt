@@ -1,0 +1,169 @@
+minikube start --driver=docker
+minikube status
+minikube docker-env
+@FOR /f "tokens=*" %i IN ('minikube -p minikube docker-env --shell cmd') DO @%i
+cd C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\springboot-crud-k8s\springboot-crud-k8s
+kubectl apply -f db-deployment.yml
+kubectl get pods
+kubectl logs <pod name>
+
+In other terminal
+
+kubectl exec -it <pod name> /bin/bash
+mysql -h mysql -u root -p
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Microsoft Windows [Version 10.0.26100.3194]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\BodhareRachit>minikube start --driver=docker
+* minikube v1.35.0 on Microsoft Windows 11 Pro 10.0.26100.3194 Build 26100.3194
+* Using the docker driver based on user configuration
+* Using Docker Desktop driver with root privileges
+* Starting "minikube" primary control-plane node in "minikube" cluster
+* Pulling base image v0.0.46 ...
+* Creating docker container (CPUs=2, Memory=2200MB) ...
+! Failing to connect to https://registry.k8s.io/ from inside the minikube container
+* To pull new external images, you may need to configure a proxy: https://minikube.sigs.k8s.io/docs/reference/networking/proxy/
+* Preparing Kubernetes v1.32.0 on Docker 27.4.1 ...
+  - Generating certificates and keys ...
+  - Booting up control plane ...
+  - Configuring RBAC rules ...
+* Configuring bridge CNI (Container Networking Interface) ...
+* Verifying Kubernetes components...
+  - Using image gcr.io/k8s-minikube/storage-provisioner:v5
+* Enabled addons: storage-provisioner, default-storageclass
+
+! C:\Program Files\Docker\Docker\resources\bin\kubectl.exe is version 1.30.5, which may have incompatibilities with Kubernetes 1.32.0.
+  - Want kubectl v1.32.0? Try 'minikube kubectl -- get pods -A'
+* Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+
+C:\Users\BodhareRachit>minikube status
+minikube
+type: Control Plane
+host: Running
+kubelet: Running
+apiserver: Running
+kubeconfig: Configured
+
+
+C:\Users\BodhareRachit>minikube docker-env
+SET DOCKER_TLS_VERIFY=1
+SET DOCKER_HOST=tcp://127.0.0.1:61171
+SET DOCKER_CERT_PATH=C:\Users\BodhareRachit\.minikube\certs
+SET MINIKUBE_ACTIVE_DOCKERD=minikube
+REM To point your shell to minikube's docker-daemon, run:
+REM @FOR /f "tokens=*" %i IN ('minikube -p minikube docker-env --shell cmd') DO @%i
+
+C:\Users\BodhareRachit>@FOR /f "tokens=*" %i IN ('minikube -p minikube docker-env --shell cmd') DO @%i
+
+C:\Users\BodhareRachit>cd C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\springboot-crud-k8s\springboot-crud-k8s
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\springboot-crud-k8s\springboot-crud-k8s>kubectl apply -f db-deployment.yml
+persistentvolumeclaim/mysql-pv-claim created
+deployment.apps/mysql created
+service/mysql created
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\springboot-crud-k8s\springboot-crud-k8s>kubectl g
+et pods
+NAME                     READY   STATUS              RESTARTS   AGE
+mysql-6f7ff6687c-pwmgx   0/1     ContainerCreating   0          18s
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\springboot-crud-k8s\springboot-crud-k8s>kubectl l
+ogs mysql-6f7ff6687c-pwmgx
+Error from server (BadRequest): container "mysql" in pod "mysql-6f7ff6687c-pwmgx" is waiting to start: ContainerCreating
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\springboot-crud-k8s\springboot-crud-k8s>kubectl get pods
+NAME                     READY   STATUS              RESTARTS   AGE
+mysql-6f7ff6687c-pwmgx   0/1     ContainerCreating   0          50s
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\springboot-crud-k8s\springboot-crud-k8s>kubectl get pods
+NAME                     READY   STATUS              RESTARTS   AGE
+mysql-6f7ff6687c-pwmgx   0/1     ContainerCreating   0          101s
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\springboot-crud-k8s\springboot-crud-k8s>kubectl get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+mysql-6f7ff6687c-pwmgx   1/1     Running   0          3m22s
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\springboot-crud-k8s\springboot-crud-k8s>kubectl logs mysql-6f7ff6687c-pwmgx
+2025-02-24 12:27:44+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.41-1.el9 started.
+2025-02-24 12:27:44+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+2025-02-24 12:27:44+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.41-1.el9 started.
+2025-02-24 12:27:45+00:00 [Note] [Entrypoint]: Initializing database files
+2025-02-24T12:27:45.373386Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2025-02-24T12:27:45.373744Z 0 [System] [MY-013169] [Server] /usr/sbin/mysqld (mysqld 8.0.41) initializing of server in progress as process 81
+2025-02-24T12:27:45.452019Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2025-02-24T12:27:47.259459Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2025-02-24T12:27:52.415084Z 6 [Warning] [MY-010453] [Server] root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.
+2025-02-24 12:27:59+00:00 [Note] [Entrypoint]: Database files initialized
+2025-02-24 12:27:59+00:00 [Note] [Entrypoint]: Starting temporary server
+2025-02-24T12:28:01.345585Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2025-02-24T12:28:01.396835Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 8.0.41) starting as process 125
+2025-02-24T12:28:01.491987Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2025-02-24T12:28:03.100389Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2025-02-24T12:28:04.615873Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2025-02-24T12:28:04.615963Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2025-02-24T12:28:04.621633Z 0 [Warning] [MY-011810] [Server] Insecure configuration for --pid-file: Location '/var/run/mysqld' in the path is accessible to all OS users. Consider choosing a different directory.
+2025-02-24T12:28:04.658855Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Socket: /var/run/mysqld/mysqlx.sock
+2025-02-24T12:28:04.659348Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.41'  socket: '/var/run/mysqld/mysqld.sock'  port: 0  MySQL Community Server - GPL.
+2025-02-24 12:28:04+00:00 [Note] [Entrypoint]: Temporary server started.
+'/var/lib/mysql/mysql.sock' -> '/var/run/mysqld/mysqld.sock'
+Warning: Unable to load '/usr/share/zoneinfo/iso3166.tab' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/leap-seconds.list' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/leapseconds' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/tzdata.zi' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/zone.tab' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/zone1970.tab' as time zone. Skipping it.
+2025-02-24 12:28:16+00:00 [Note] [Entrypoint]: Creating database test
+
+2025-02-24 12:28:16+00:00 [Note] [Entrypoint]: Stopping temporary server
+2025-02-24T12:28:16.958895Z 11 [System] [MY-013172] [Server] Received SHUTDOWN from user root. Shutting down mysqld (Version: 8.0.41).
+2025-02-24T12:28:18.941708Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.41)  MySQL Community Server - GPL.
+2025-02-24 12:28:18+00:00 [Note] [Entrypoint]: Temporary server stopped
+
+2025-02-24 12:28:18+00:00 [Note] [Entrypoint]: MySQL init process done. Ready for start up.
+
+2025-02-24T12:28:19.366096Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2025-02-24T12:28:19.367867Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 8.0.41) starting as process 1
+2025-02-24T12:28:19.379482Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2025-02-24T12:28:19.766127Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2025-02-24T12:28:20.165077Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2025-02-24T12:28:20.165183Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2025-02-24T12:28:20.172014Z 0 [Warning] [MY-011810] [Server] Insecure configuration for --pid-file: Location '/var/run/mysqld' in the path is accessible to all OS users. Consider choosing a different directory.
+2025-02-24T12:28:20.205882Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '::' port: 33060, socket: /var/run/mysqld/mysqlx.sock
+2025-02-24T12:28:20.206082Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.41'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server - GPL.

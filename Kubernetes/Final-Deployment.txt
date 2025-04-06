@@ -1,0 +1,136 @@
+#!/bin/bash
+
+# 🚀 GKE Deployment & Cost-Effective Management Guide
+
+# 1️⃣ Create a Google Cloud Project
+# If you haven't already, create a new project:
+gcloud projects create my-gke-project --set-as-default
+gcloud config set project my-gke-project
+
+# Alternatively, use an existing project:
+gcloud config set project <your-existing-project-id>
+
+# 2️⃣ Open Cloud Shell
+# Google Cloud Shell provides a ready-to-use terminal.
+# Open Google Cloud Console and click Cloud Shell (top-right)
+
+# Verify project setup:
+gcloud config list
+
+# 3️⃣ Enable Required APIs
+gcloud services enable container.googleapis.com
+gcloud services enable artifactregistry.googleapis.com
+
+# 4️⃣ Create a GKE Cluster
+gcloud container clusters create my-cluster \
+  --num-nodes=3 \
+  --zone=us-central1-a
+
+# Verify:
+gcloud container clusters list
+kubectl get nodes
+
+# 5️⃣ Clone Your Project From GitHub
+git clone https://github.com/your-repo.git
+cd your-repo
+
+# 6️⃣ Build Services to Generate JAR Files (For Spring Boot Services)
+cd api-gateway && mvn clean package -DskipTests && cd ..
+cd user-service && mvn clean package -DskipTests && cd ..
+cd task-service && mvn clean package -DskipTests && cd ..
+
+# 7️⃣ Build & Push Docker Images to Google Container Registry (GCR)
+
+# Authenticate Docker with GCR
+gcloud auth configure-docker
+
+# Build Docker Images Locally
+docker build -t gcr.io/my-gke-project/api-gateway:latest -f api-gateway/Dockerfile .
+docker build -t gcr.io/my-gke-project/user-service:latest -f user-service/Dockerfile .
+docker build -t gcr.io/my-gke-project/task-service:latest -f task-service/Dockerfile .
+docker build -t gcr.io/my-gke-project/postgres:latest -f postgres/Dockerfile .
+
+# Push Images to GCR
+docker push gcr.io/my-gke-project/api-gateway:latest
+docker push gcr.io/my-gke-project/user-service:latest
+docker push gcr.io/my-gke-project/task-service:latest
+docker push gcr.io/my-gke-project/postgres:latest
+
+# Verify:
+gcloud artifacts docker images list gcr.io/my-gke-project
+
+# 8️⃣ Update Image Names in Deployment Files
+# Modify each deployment YAML file to use GCR images
+# Example:
+# containers:
+#   - name: api-gateway
+#     image: gcr.io/my-gke-project/api-gateway:latest
+
+# 9️⃣ Apply Deployment Files
+kubectl apply -f k8s/
+
+# Verify:
+kubectl get pods
+kubectl get svc
+
+# 🔟 Expose API Gateway (If Needed)
+cat <<EOF > api-gateway-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+spec:
+  type: LoadBalancer
+  selector:
+    app: api-gateway
+  ports:
+    - port: 80
+      targetPort: 8080
+EOF
+
+kubectl apply -f api-gateway-service.yaml
+
+# Check external IP:
+kubectl get svc
+
+# 🔴 Stop Services to Avoid Billing
+
+# Option 1: Scale Down the Cluster
+gcloud container clusters resize my-cluster --num-nodes=0 --zone=us-central1-a
+
+# Option 2: Delete the Cluster (More Drastic)
+gcloud container clusters delete my-cluster --zone=us-central1-a
+
+# 🟢 Restart Services Quickly
+
+# If you scaled down, scale up again:
+gcloud container clusters resize my-cluster --num-nodes=3 --zone=us-central1-a
+
+# If you deleted the cluster, recreate it:
+gcloud container clusters create my-cluster \
+  --num-nodes=3 \
+  --zone=us-central1-a
+
+# Redeploy:
+kubectl apply -f k8s/
+kubectl get pods
+kubectl get svc
+
+# ✅ Summary Table
+#| Step | Command |
+#|------|---------|
+#| **Create Project** | `gcloud projects create my-gke-project --set-as-default` |
+#| **Enable APIs** | `gcloud services enable container.googleapis.com` |
+#| **Create Cluster** | `gcloud container clusters create my-cluster --num-nodes=3 --zone=us-central1-a` |
+#| **Clone Code** | `git clone https://github.com/your-repo.git && cd your-repo` |
+#| **Build Services** | `mvn clean package -DskipTests` |
+#| **Build Images** | `docker build -t gcr.io/my-gke-project/api-gateway:latest -f api-gateway/Dockerfile .` |
+#| **Push to GCR** | `docker push gcr.io/my-gke-project/api-gateway:latest` |
+#| **Update Deployment YAML** | Change image to `gcr.io/my-gke-project/...` |
+#| **Deploy to GKE** | `kubectl apply -f k8s/` |
+#| **Check Status** | `kubectl get pods && kubectl get svc` |
+#| **Expose API Gateway** | `kubectl apply -f api-gateway-service.yaml` |
+#| **Scale Down to Save Costs** | `gcloud container clusters resize my-cluster --num-nodes=0 --zone=us-central1-a` |
+#| **Restart Services** | `gcloud container clusters resize my-cluster --num-nodes=3 --zone=us-central1-a` |
+
+# 🚀 This ensures quick restarts while keeping costs low!

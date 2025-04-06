@@ -1,0 +1,118 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres_container
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ecommerce-network
+
+  order-db:
+    image: postgres:latest
+    container_name: order_postgres_container
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: orderdb
+    ports:
+      - "5434:5432"
+    volumes:
+      - order_data:/var/lib/postgresql/data
+    networks:
+      - ecommerce-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - ecommerce-network
+
+  eureka-server:
+    image: my-ecommerce/eureka-server:latest
+    build:
+      context: ./eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - ecommerce-network
+
+  api-gateway:
+    image: my-ecommerce/api-gateway:latest
+    build:
+      context: ./api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-server
+    networks:
+      - ecommerce-network
+
+  product-service:
+    image: my-ecommerce/product-service:latest
+    build:
+      context: ./product-service
+    ports:
+      - "8081:8081"
+    restart: always
+    depends_on:
+      - db
+      - eureka-server
+      - rabbitmq
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    networks:
+      - ecommerce-network
+
+  order-service:
+    image: my-ecommerce/order-service:latest
+    build:
+      context: ./order-service
+    ports:
+      - "8082:8082"
+    restart: always
+    depends_on:
+      - order-db
+      - eureka-server
+      - rabbitmq
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://order-db:5432/orderdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    networks:
+      - ecommerce-network
+
+  user-service:
+    image: my-ecommerce/user-service:latest
+    build:
+      context: ./user-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - eureka-server
+    networks:
+      - ecommerce-network
+
+networks:
+  ecommerce-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  order_data:

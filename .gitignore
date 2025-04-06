@@ -1,0 +1,16 @@
+# Ignore all JAR and ZIP files
+*.jar
+*.zip
+
+# Ignore compiled files
+*.class
+*.war
+
+# Ignore IDE-related files
+/.idea/
+/*.iml
+/.vscode/
+
+# Ignore OS files
+.DS_Store
+Thumbs.db

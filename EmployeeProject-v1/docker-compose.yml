@@ -1,0 +1,118 @@
+services:
+  employee-db:
+    image: postgres:latest
+    container_name: employee_postgres_container
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: employeedb
+    ports:
+      - "5432:5432"
+    volumes:
+      - employee_data:/var/lib/postgresql/data
+    networks:
+      - employee-network
+
+  payroll-db:
+    image: postgres:latest
+    container_name: payroll_postgres_container
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: payrolldb
+    ports:
+      - "5434:5432"
+    volumes:
+      - payroll_data:/var/lib/postgresql/data
+    networks:
+      - employee-network
+
+  rabbitmq:
+    image: rabbitmq:4.0.5-management
+    container_name: rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - employee-network
+
+  eureka-server:
+    image: my-employee/eureka-server:latest
+    build:
+      context: ./eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - employee-network
+
+  api-gateway:
+    image: my-employee/api-gateway:latest
+    build:
+      context: ./api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-server
+    networks:
+      - employee-network
+
+  employee-service:
+    image: my-employee/employee-service:latest
+    build:
+      context: ./employee-service
+    ports:
+      - "8081:8081"
+    restart: always
+    depends_on:
+      - employee-db
+      - eureka-server
+#      - rabbitmq
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://employee-db:5432/employeedb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    networks:
+      - employee-network
+
+  payroll-service:
+    image: my-employee/payroll-service:latest
+    build:
+      context: ./payroll-service
+    ports:
+      - "8083:8083"
+    restart: always
+    depends_on:
+      - payroll-db
+      - eureka-server
+      - rabbitmq
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://payroll-db:5432/payrolldb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    networks:
+      - employee-network
+
+  user-service:
+    image: my-employee/user-service:latest
+    build:
+      context: ./user-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - eureka-server
+    networks:
+      - employee-network
+
+networks:
+  employee-network:
+    driver: bridge
+
+volumes:
+  employee_data:
+  payroll_data:

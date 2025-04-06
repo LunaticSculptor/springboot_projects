@@ -1,0 +1,313 @@
+minikube start --driver=docker
+minikube status
+minikube docker-env
+@FOR /f "tokens=*" %i IN ('minikube -p minikube docker-env --shell cmd') DO @%i
+cd C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s
+docker build -t springboot-k8s-demo:1.0 .
+kubectl create deployment spring-boot-k8s --image=springboot-k8s-demo:1.0 --port=8080
+kubectl get deployment
+kubectl describe deployment
+kubectl get pods
+kubectl logs <pod-name>
+kubectl expose deployment spring-boot-k8s --type=NodePort
+kubectl get service
+minikube service spring-boot-k8s --url
+minikube dashboard
+
+kubectl delete service spring-boot-k8s
+kubectl delete deployment spring-boot-k8s
+minikube stop
+minikube delete
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+C:\Users\BodhareRachit>minikube version
+minikube version: v1.35.0
+commit: dd5d320e41b5451cdf3c01891bc4e13d189586ed-dirty
+
+C:\Users\BodhareRachit>minikube start --driver=docker
+* minikube v1.35.0 on Microsoft Windows 11 Pro 10.0.26100.3194 Build 26100.3194
+* Using the docker driver based on user configuration
+* Using Docker Desktop driver with root privileges
+* Starting "minikube" primary control-plane node in "minikube" cluster
+* Pulling base image v0.0.46 ...
+* Downloading Kubernetes v1.32.0 preload ...
+    > gcr.io/k8s-minikube/kicbase...:  500.31 MiB / 500.31 MiB  100.00% 5.51 Mi
+    > preloaded-images-k8s-v18-v1...:  333.57 MiB / 333.57 MiB  100.00% 3.65 Mi
+* Creating docker container (CPUs=2, Memory=2200MB) ...
+! Failing to connect to https://registry.k8s.io/ from inside the minikube container
+* To pull new external images, you may need to configure a proxy: https://minikube.sigs.k8s.io/docs/reference/networking/proxy/
+* Preparing Kubernetes v1.32.0 on Docker 27.4.1 ...
+  - Generating certificates and keys ...
+  - Booting up control plane ...
+  - Configuring RBAC rules ...
+* Configuring bridge CNI (Container Networking Interface) ...
+* Verifying Kubernetes components...
+  - Using image gcr.io/k8s-minikube/storage-provisioner:v5
+* Enabled addons: storage-provisioner, default-storageclass
+
+! C:\Program Files\Docker\Docker\resources\bin\kubectl.exe is version 1.30.5, which may have incompatibilities with Kubernetes 1.32.0.
+  - Want kubectl v1.32.0? Try 'minikube kubectl -- get pods -A'
+* Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+
+C:\Users\BodhareRachit>minikube status
+minikube
+type: Control Plane
+host: Running
+kubelet: Running
+apiserver: Running
+kubeconfig: Configured
+
+
+C:\Users\BodhareRachit>kubectl cluster-info
+Kubernetes control plane is running at https://127.0.0.1:53735
+CoreDNS is running at https://127.0.0.1:53735/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+
+C:\Users\BodhareRachit>kubectl get node
+NAME       STATUS   ROLES           AGE     VERSION
+minikube   Ready    control-plane   5m21s   v1.32.0
+
+C:\Users\BodhareRachit>minikube docker-env
+SET DOCKER_TLS_VERIFY=1
+SET DOCKER_HOST=tcp://127.0.0.1:53737
+SET DOCKER_CERT_PATH=C:\Users\BodhareRachit\.minikube\certs
+SET MINIKUBE_ACTIVE_DOCKERD=minikube
+REM To point your shell to minikube's docker-daemon, run:
+REM @FOR /f "tokens=*" %i IN ('minikube -p minikube docker-env --shell cmd') DO @%i
+
+C:\Users\BodhareRachit> @FOR /f "tokens=*" %i IN ('minikube -p minikube docker-env --shell cmd') DO @%i
+
+C:\Users\BodhareRachit>docker images
+REPOSITORY                                TAG        IMAGE ID       CREATED        SIZE
+registry.k8s.io/kube-apiserver            v1.32.0    c2e17b8d0f4a   2 months ago   97MB
+registry.k8s.io/kube-controller-manager   v1.32.0    8cab3d2a8bd0   2 months ago   89.7MB
+registry.k8s.io/kube-scheduler            v1.32.0    a389e107f4ff   2 months ago   69.6MB
+registry.k8s.io/kube-proxy                v1.32.0    040f9f8aac8c   2 months ago   94MB
+registry.k8s.io/etcd                      3.5.16-0   a9e7e6b294ba   5 months ago   150MB
+registry.k8s.io/coredns/coredns           v1.11.3    c69fa2e9cbf5   6 months ago   61.8MB
+registry.k8s.io/pause                     3.10       873ed7510279   9 months ago   736kB
+gcr.io/k8s-minikube/storage-provisioner   v5         6e38f40d628d   3 years ago    31.5MB
+
+C:\Users\BodhareRachit>cd C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>d
+ocker build -t springboot-k8s-demo:1.0 .
+[+] Building 69.2s (8/8) FINISHED                                                        docker:default
+ => [internal] load build definition from Dockerfile                                               0.2s
+ => => transferring dockerfile: 182B                                                               0.0s
+ => [internal] load metadata for docker.io/library/openjdk:23                                      4.8s
+ => [auth] library/openjdk:pull token for registry-1.docker.io                                     0.0s
+ => [internal] load .dockerignore                                                                  0.1s
+ => => transferring context: 2B                                                                    0.0s
+ => [1/2] FROM docker.io/library/openjdk:23@sha256:fd0f3721ad4abbfe393ac1a2672abf4b7f53b5ecd9803  63.0s
+ => => resolve docker.io/library/openjdk:23@sha256:fd0f3721ad4abbfe393ac1a2672abf4b7f53b5ecd9803a  0.1s
+ => => sha256:79b3709d6cbf229121678d03417b3b43462f0ce9acd617bedf19091068ad90ec 1.57kB / 1.57kB     0.0s
+ => => sha256:6fae20072d2a12db20f634ae5afd5f7617a68ea594d6c852d22fd962804099eb 3.46kB / 3.46kB     0.0s
+ => => sha256:5e407bf3af905fb1f6edf271f870052697e79b018f921119921615cd25365fdb 49.24MB / 49.24MB  19.8s
+ => => sha256:fd0f3721ad4abbfe393ac1a2672abf4b7f53b5ecd9803a4e2444aa3acd7d398e 3.33kB / 3.33kB     0.0s
+ => => sha256:b3c1ea9e315646607184654c85696fc0269f0c99b2067585f1dc26e206a13230 40.42MB / 40.42MB  22.3s
+ => => sha256:cdea025156ce54480a983c8a9ad7b91e8c6002863e9219f9e73f21478e0fd2 211.28MB / 211.28MB  50.0s
+ => => extracting sha256:5e407bf3af905fb1f6edf271f870052697e79b018f921119921615cd25365fdb         11.9s
+ => => extracting sha256:b3c1ea9e315646607184654c85696fc0269f0c99b2067585f1dc26e206a13230         13.1s
+ => => extracting sha256:cdea025156ce54480a983c8a9ad7b91e8c6002863e9219f9e73f21478e0fd2d6         12.6s
+ => [internal] load build context                                                                  3.8s
+ => => transferring context: 20.72MB                                                               3.6s
+ => [2/2] ADD target/springboot-k8s-demo.jar springboot-k8s-demo.jar                               0.6s
+ => exporting to image                                                                             0.2s
+ => => exporting layers                                                                            0.2s
+ => => writing image sha256:5340449cce9dc96e9f5d16933647b2967d3bc696931c83ef2bfced20af108822       0.0s
+ => => naming to docker.io/library/springboot-k8s-demo:1.0                                         0.0s
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>d
+ocker images
+REPOSITORY                                TAG        IMAGE ID       CREATED          SIZE
+springboot-k8s-demo                       1.0        5340449cce9d   40 seconds ago   596MB
+registry.k8s.io/kube-apiserver            v1.32.0    c2e17b8d0f4a   2 months ago     97MB
+registry.k8s.io/kube-controller-manager   v1.32.0    8cab3d2a8bd0   2 months ago     89.7MB
+registry.k8s.io/kube-scheduler            v1.32.0    a389e107f4ff   2 months ago     69.6MB
+registry.k8s.io/kube-proxy                v1.32.0    040f9f8aac8c   2 months ago     94MB
+registry.k8s.io/etcd                      3.5.16-0   a9e7e6b294ba   5 months ago     150MB
+registry.k8s.io/coredns/coredns           v1.11.3    c69fa2e9cbf5   6 months ago     61.8MB
+registry.k8s.io/pause                     3.10       873ed7510279   9 months ago     736kB
+gcr.io/k8s-minikube/storage-provisioner   v5         6e38f40d628d   3 years ago      31.5MB
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>k
+ubectl create deployment spring-boot-k8s --image=springboot-k8s-demo:1.0 --port=8080
+deployment.apps/spring-boot-k8s created
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>k
+ubectl get deployment
+NAME              READY   UP-TO-DATE   AVAILABLE   AGE
+spring-boot-k8s   1/1     1            1           41s
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>k
+ubectl describe deployment
+Name:                   spring-boot-k8s
+Namespace:              default
+CreationTimestamp:      Mon, 24 Feb 2025 12:31:48 +0530
+Labels:                 app=spring-boot-k8s
+Annotations:            deployment.kubernetes.io/revision: 1
+Selector:               app=spring-boot-k8s
+Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:  app=spring-boot-k8s
+  Containers:
+   springboot-k8s-demo:
+    Image:         springboot-k8s-demo:1.0
+    Port:          8080/TCP
+    Host Port:     0/TCP
+    Environment:   <none>
+    Mounts:        <none>
+  Volumes:         <none>
+  Node-Selectors:  <none>
+  Tolerations:     <none>
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  <none>
+NewReplicaSet:   spring-boot-k8s-994b94d96 (1/1 replicas created)
+Events:
+  Type    Reason             Age   From                   Message
+  ----    ------             ----  ----                   -------
+  Normal  ScalingReplicaSet  79s   deployment-controller  Scaled up replica set spring-boot-k8s-994b94d96 from 0 to 1
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>k
+ubectl get pods
+NAME                              READY   STATUS    RESTARTS   AGE
+spring-boot-k8s-994b94d96-v6vf4   1/1     Running   0          2m
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>k
+ubectl logs spring-boot-k8s-994b94d96-v6vf4
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.3)
+
+2025-02-24T07:01:58.381Z  INFO 1 --- [spring-boot-k8s] [           main] c.e.s.SpringBootK8sApplication           : Starting SpringBootK8sApplication v0.0.1-SNAPSHOT using Java 23 with PID 1 (/springboot-k8s-demo.jar started by root in /)
+2025-02-24T07:01:58.389Z  INFO 1 --- [spring-boot-k8s] [           main] c.e.s.SpringBootK8sApplication           : No active profile set, falling back to 1 default profile: "default"
+2025-02-24T07:02:08.107Z  INFO 1 --- [spring-boot-k8s] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-02-24T07:02:08.195Z  INFO 1 --- [spring-boot-k8s] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-02-24T07:02:08.196Z  INFO 1 --- [spring-boot-k8s] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2025-02-24T07:02:08.278Z  INFO 1 --- [spring-boot-k8s] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-02-24T07:02:08.282Z  INFO 1 --- [spring-boot-k8s] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 9167 ms
+2025-02-24T07:02:13.702Z  INFO 1 --- [spring-boot-k8s] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-02-24T07:02:13.920Z  INFO 1 --- [spring-boot-k8s] [           main] c.e.s.SpringBootK8sApplication           : Started SpringBootK8sApplication in 19.397 seconds (process running for 22.648)
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>k
+ubectl get deployments
+NAME              READY   UP-TO-DATE   AVAILABLE   AGE
+spring-boot-k8s   1/1     1            1           3m28s
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>k
+ubectl expose deployment spring-boot-k8s --type=NodePort
+service/spring-boot-k8s exposed
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>k
+ubectl get service
+NAME              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+kubernetes        ClusterIP   10.96.0.1        <none>        443/TCP          23m
+spring-boot-k8s   NodePort    10.104.166.140   <none>        8080:31164/TCP   2m1s
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>m
+inikube service spring-boot-k8s --url
+http://127.0.0.1:54256
+! Because you are using a Docker driver on windows, the terminal needs to be open to run it.
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>m
+inikube dashboard
+* Enabling dashboard ...
+  - Using image docker.io/kubernetesui/dashboard:v2.7.0
+  - Using image docker.io/kubernetesui/metrics-scraper:v1.0.8
+* Some dashboard features require the metrics-server addon. To enable all features please run:
+
+        minikube addons enable metrics-server
+
+* Verifying dashboard health ...
+* Launching proxy ...
+* Verifying proxy health ...
+* Opening http://127.0.0.1:54346/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/ in your default browser...
+^C
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>d
+elete service spring-boot-k8s
+'delete' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>kubectl delete service spring-boot-k8s
+service "spring-boot-k8s" deleted
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>kubectl delete deployment spring-boot-k8s
+deployment.apps "spring-boot-k8s" deleted
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>k
+ubectl get pods
+No resources found in default namespace.
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>kubectl get svc
+NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   36m
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>kubectl get deployments
+No resources found in default namespace.
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>m
+inikube stop
+* Stopping node "minikube"  ...
+* Powering off "minikube" via SSH ...
+* 1 node stopped.
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>k
+ubectl get nodes
+E0224 12:53:49.198341    9148 memcache.go:265] couldn't get current server API group list: Get "http://localhost:8080/api?timeout=32s": dial tcp [::1]:8080: connectex: No connection could be made because the target machine actively refused it.
+E0224 12:53:49.201858    9148 memcache.go:265] couldn't get current server API group list: Get "http://localhost:8080/api?timeout=32s": dial tcp [::1]:8080: connectex: No connection could be made because the target machine actively refused it.
+E0224 12:53:49.203110    9148 memcache.go:265] couldn't get current server API group list: Get "http://localhost:8080/api?timeout=32s": dial tcp [::1]:8080: connectex: No connection could be made because the target machine actively refused it.
+E0224 12:53:49.205414    9148 memcache.go:265] couldn't get current server API group list: Get "http://localhost:8080/api?timeout=32s": dial tcp [::1]:8080: connectex: No connection could be made because the target machine actively refused it.
+E0224 12:53:49.206608    9148 memcache.go:265] couldn't get current server API group list: Get "http://localhost:8080/api?timeout=32s": dial tcp [::1]:8080: connectex: No connection could be made because the target machine actively refused it.
+Unable to connect to the server: dial tcp [::1]:8080: connectex: No connection could be made because the target machine actively refused it.
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>m
+inikube delete
+* Deleting "minikube" in docker ...
+* Deleting container "minikube" ...
+* Removing C:\Users\BodhareRachit\.minikube\machines\minikube ...
+* Removed all traces of the "minikube" cluster.
+
+C:\Users\BodhareRachit\OneDrive - Cubastion Consulting Pvt Ltd\Desktop\spring-boot-k8s\spring-boot-k8s>
